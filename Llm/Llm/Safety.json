@@ -19,7 +19,7 @@
       "settings.gradle"
     ],
    "forbidden_paths": 
-    ],
+
     "allowed_extensions": [
       ".java",
       ".kt",
