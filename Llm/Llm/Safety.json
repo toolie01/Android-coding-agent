@@ -1,0 +1,185 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "name": "Android Agent Safeguards",
+    "created_at": "2026-06-20",
+    "description": "Define all restrictions, permissions, and behavior rules for the coding agent"
+  },
+  
+  "file_system": {
+    "allowed_paths": [
+      "app/",
+      "src/",
+      "res/",
+      "libs/",
+      "build/",
+      "gradle/",
+      "AndroidManifest.xml",
+      "build.gradle",
+      "settings.gradle"
+    ],
+    "forbidden_paths": [
+      "/system/",
+      "/etc/",
+      "node_modules/",
+      ".git/config",
+      "secrets/",
+      "keys/"
+    ],
+    "allowed_extensions": [
+      ".java",
+      ".kt",
+      ".xml",
+      ".gradle",
+      ".json",
+      ".properties",
+      ".proto"
+    ],
+    "max_file_size_mb": 50,
+    "read_only_paths": [
+      "build/",
+      ".git/"
+    ]
+  },
+
+  "code_generation": {
+    "enabled": true,
+    "max_files_per_operation": 10,
+    "max_lines_per_file": 2000,
+    "require_approval": false,
+    "languages": ["java", "kotlin", "xml"],
+    "frameworks": ["android", "androidx", "jetpack"],
+    "restricted_imports": [
+      "java.io.File.delete",
+      "java.lang.Runtime.exec",
+      "android.os.Process.killProcess"
+    ]
+  },
+
+  "git_operations": {
+    "enabled": true,
+    "allowed_operations": [
+      "commit",
+      "branch_create",
+      "branch_delete",
+      "pull_request_create",
+      "tag_create"
+    ],
+    "forbidden_operations": [
+      "force_push",
+      "rebase",
+      "history_rewrite"
+    ],
+    "require_approval_for": [
+      "pull_request_create",
+      "force_operations"
+    ],
+    "commit_message_template": "[agent] {action}: {description}",
+    "auto_commit": false,
+    "branch_protection": true
+  },
+
+  "testing": {
+    "enabled": true,
+    "auto_run_tests": true,
+    "test_framework": ["junit", "androidjunit"],
+    "coverage_minimum_percent": 70,
+    "require_passing_tests": true,
+    "allowed_test_commands": [
+      "gradle test",
+      "gradle connectedAndroidTest"
+    ]
+  },
+
+  "api_calls": {
+    "enabled": true,
+    "allowed_services": [
+      "github.com",
+      "maven.google.com",
+      "repo.maven.apache.org",
+      "jcenter.bintray.com"
+    ],
+    "forbidden_services": [
+      "malicious.com",
+      "external.data.collector"
+    ],
+    "rate_limit": {
+      "requests_per_minute": 60,
+      "burst_size": 10
+    },
+    "timeout_seconds": 30
+  },
+
+  "llm_interaction": {
+    "enabled": true,
+    "model_type": "custom",
+    "max_tokens": 4096,
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "context_window": 8192,
+    "system_prompt": "You are an expert Android developer. Follow all safeguards strictly.",
+    "custom_instructions": [
+      "Always explain code changes",
+      "Suggest testing strategies",
+      "Flag potential security issues",
+      "Recommend best practices"
+    ]
+  },
+
+  "logging": {
+    "enabled": true,
+    "level": "info",
+    "log_file": "agent.log",
+    "audit_trail": true,
+    "log_decisions": true,
+    "log_api_calls": true,
+    "log_file_operations": true
+  },
+
+  "security": {
+    "sandbox_mode": false,
+    "validate_checksums": true,
+    "scan_for_malicious_patterns": true,
+    "malicious_patterns": [
+      "eval(",
+      "exec(",
+      "system(",
+      "Runtime.exec",
+      "__import__"
+    ],
+    "require_human_review_for": [
+      "dangerous_patterns",
+      "external_dependencies"
+    ]
+  },
+
+  "resource_limits": {
+    "max_memory_mb": 2048,
+    "max_cpu_percent": 80,
+    "timeout_seconds": 300,
+    "max_parallel_operations": 4
+  },
+
+  "android_specific": {
+    "gradle_modifications": true,
+    "manifest_modifications": true,
+    "resource_generation": true,
+    "dependency_management": true,
+    "min_sdk_version": 21,
+    "target_sdk_version": 34,
+    "restrict_dangerous_permissions": [
+      "android.permission.WRITE_SECURE_SETTINGS",
+      "android.permission.ACCESS_FINE_LOCATION"
+    ]
+  },
+
+  "notifications": {
+    "enabled": true,
+    "channels": ["console", "log"],
+    "notify_on": [
+      "major_changes",
+      "safeguard_violations",
+      "completion"
+    ]
+  }
+}
